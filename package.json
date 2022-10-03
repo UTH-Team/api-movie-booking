@@ -1,0 +1,36 @@
+{
+  "name": "api-movie-booking",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/trdoan/api-movie-booking.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/trdoan/api-movie-booking/issues"
+  },
+  "homepage": "https://github.com/trdoan/api-movie-booking#readme",
+  "devDependencies": {
+    "nodemon": "^2.0.20",
+    "sequelize-cli": "^6.5.1",
+    "faker": "^5.5.3",
+    "cors": "^2.8.5",
+    "dotenv": "^10.0.0"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "express": "^4.18.1",
+    "jsonwebtoken": "^8.5.1",
+    "multer": "^1.4.5-lts.1",
+    "mysql2": "^2.3.3",
+    "nodemailer": "^6.8.0",
+    "sequelize": "^6.23.2"
+  }
+}
