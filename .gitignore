@@ -1,0 +1,9 @@
+# variables env
+.env
+
+# lib files
+node_modules
+
+# files log manager packages
+package-lock.json
+yarn-lock.json
