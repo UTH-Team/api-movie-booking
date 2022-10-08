@@ -18,6 +18,24 @@ const UserController = {
       res.status(500).send(error.message);
     }
   },
+  async createUser(req, res) {
+    const { firstName, lastName, sex, email, password, role } = req.body;
+    const newUser = {
+      firstName,
+      lastName,
+      sex,
+      email,
+      password,
+      role,
+    };
+    try {
+      await User.create(newUser);
+      res.send(newUser);
+    } catch (error) {
+      console.log(error);
+      res.status(500).send(error.message);
+    }
+  },
 };
 
 module.exports = UserController;
