@@ -1,3 +1,5 @@
+# seeder folder of sequelize
+seeders
 # variables env
 .env
 
