@@ -59,6 +59,20 @@ const UserController = {
       res.status(500).send(error.message);
     }
   },
+  async deleteUser(req, res) {
+    const { id } = req.params;
+    try {
+      await User.destroy({
+        where: {
+          id,
+        },
+      });
+      res.send("Delete user sucesfully");
+    } catch (error) {
+      console.log(error);
+      res.status(500).send(error.message);
+    }
+  },
 };
 
 module.exports = UserController;
