@@ -36,6 +36,29 @@ const UserController = {
       res.status(500).send(error.message);
     }
   },
+  async updateUser(req, res) {
+    const { id } = req.params;
+    const { firstName, lastName, sex, password, role, avatar } = req.body;
+    const user = {
+      firstName,
+      lastName,
+      sex,
+      password,
+      role,
+      avatar,
+    };
+    try {
+      await User.update(user, {
+        where: {
+          id,
+        },
+      });
+      res.send(`Update user ${id} sucesfully`);
+    } catch (error) {
+      console.log(error);
+      res.status(500).send(error.message);
+    }
+  },
 };
 
 module.exports = UserController;
