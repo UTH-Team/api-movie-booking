@@ -1,42 +1,43 @@
 const { User } = require("../models");
 
 const UserController = {
-  async findAllUser(req, res) {
+  async findAllUser(req, res, next) {
     try {
       const userList = await User.findAll();
-      res.send(userList);
+      res.locals.data = userList;
+      next();
     } catch (error) {
-      res.status(500).send(error.message);
+      next(error);
     }
   },
   async findOneUser(req, res) {
-    const { id } = req.params;
     try {
+      const { id } = req.params;
       const user = await User.findByPk(id);
-      res.send(user);
+      res.locals.data = user;
     } catch (error) {
-      res.status(500).send(error.message);
+      next(error);
     }
   },
-  async createUser(req, res) {
-    const { firstName, lastName, sex, email, password, role } = req.body;
-    const newUser = {
-      firstName,
-      lastName,
-      sex,
-      email,
-      password,
-      role,
-    };
+  async createUser(req, res, next) {
     try {
-      await User.create(newUser);
-      res.send(newUser);
-    } catch (error) {
-      console.log(error);
-      res.status(500).send(error.message);
-    }
+      const { firstName, lastName, sex, email, password, role } = req.body;
+      const newUser = {
+        firstName,
+        lastName,
+        sex,
+        email,
+        password,
+        role,
+      };
+        await User.create(newUser);
+        res.locals.data = newUser;
+        next();
+      } catch (error) {
+        next(error)
+      }
   },
-  async updateUser(req, res) {
+  async updateUser(req, res, next) {
     const { id } = req.params;
     const { firstName, lastName, sex, password, role, avatar } = req.body;
     const user = {
@@ -53,24 +54,22 @@ const UserController = {
           id,
         },
       });
-      res.send(`Update user ${id} sucesfully`);
+      next();
     } catch (error) {
-      console.log(error);
-      res.status(500).send(error.message);
+      next(error)
     }
   },
-  async deleteUser(req, res) {
-    const { id } = req.params;
+  async deleteUser(req, res, next) {
     try {
+      const { id } = req.params;
       await User.destroy({
         where: {
           id,
         },
       });
-      res.send("Delete user sucesfully");
+      next();
     } catch (error) {
-      console.log(error);
-      res.status(500).send(error.message);
+      next(error)
     }
   },
 };
