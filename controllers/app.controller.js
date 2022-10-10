@@ -10,7 +10,7 @@ function errorHandler(error, request, response, next) {
 	const errorResponse = {
 		statusCode: getHttpStatusCode({ error, response }),
 		error: {
-			type: getErrorType(error),
+			type: getErrorType({error, response}),
 			message: getErrorMessage(error)
 		}
 	};
