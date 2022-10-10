@@ -1,4 +1,5 @@
 const { User } = require("../models");
+const createError = require("http-errors")
 
 const UserController = {
   async findAllUser(req, res, next) {
@@ -10,11 +11,16 @@ const UserController = {
       next(error);
     }
   },
-  async findOneUser(req, res) {
+  async findOneUser(req, res, next) {
     try {
-      const { id } = req.params;
-      const user = await User.findByPk(id);
-      res.locals.data = user;
+      const { recordDB } = req;
+      if (recordDB){
+        res.locals.data = recordDB;
+        next();
+      }
+      else {
+        next(createError(404, 'USER IS NOT EXIST'));
+      }
     } catch (error) {
       next(error);
     }
@@ -38,28 +44,42 @@ const UserController = {
       }
   },
   async updateUser(req, res, next) {
-    const { id } = req.params;
-    const { firstName, lastName, sex, password, role, avatar } = req.body;
-    const user = {
-      firstName,
-      lastName,
-      sex,
-      password,
-      role,
-      avatar,
-    };
-    try {
-      await User.update(user, {
-        where: {
-          id,
-        },
-      });
-      next();
-    } catch (error) {
-      next(error)
+    const { recordDB } = req;
+    if (recordDB){
+      try {
+        const { id } = req.params;
+        const { firstName, lastName, sex, password, role, avatar } = req.body;
+        const user = {
+          firstName,
+          lastName,
+          sex,
+          password,
+          role,
+          avatar,
+        };
+        await User.update(user, {
+          where: {
+            id,
+          },
+        });
+        next();
+      } catch (error) {
+        next(error)
+      }
+    }
+    else {
+      next(createError(404, 'USER IS NOT EXIST'));
     }
   },
   async deleteUser(req, res, next) {
+    const { recordDB } = req;
+    if (recordDB){
+      res.locals.data = recordDB;
+      next();
+    }
+    else {
+      next(createError(404, 'USER IS NOT EXIST'))
+    }
     try {
       const { id } = req.params;
       await User.destroy({
