@@ -2,13 +2,16 @@ const { CRASH_APP_BY_SYNTAX, NOT_FOUND } = require("./constants")
 
 function getErrorMessage(error) {
 	const {original, fields, stack } = error
+	const statusCodeFromError = error.status ||  error.statsCode
 	// error from Sequelize ORM
 	if(original) {
 		const { code } = original
 		const keyOfFields = Object.keys(fields)
 		return code + " " + keyOfFields
 	}
-
+	if(statusCodeFromError === 404){
+		return error.message
+	}
 	if (stack) {
 		return stack;
 	}
@@ -18,11 +21,12 @@ function getErrorMessage(error) {
 	}
 	return "";
 }
-function getErrorType(error) {
+function getErrorType({error, response}) {
 	// SEQUELIZE
 	const {original, stack } = error
 	if (original) return original.code
-
+	const statusCodeFromError = error.status ||  error.statsCode
+	if(statusCodeFromError === 404 ) return NOT_FOUND
 	// CRASH_APP
 	if (stack) return CRASH_APP_BY_SYNTAX
 
@@ -44,7 +48,9 @@ function getHttpStatusCode({ error, response }) {
 	if (isErrorStatusCode(statusCodeFromResponse)) {
 		return statusCodeFromResponse;
 	}
-
+	if (error.original){
+		return 400;
+	}
 	return 500;
 }
 module.exports = {
