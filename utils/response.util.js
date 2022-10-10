@@ -1,4 +1,4 @@
-const { CRASH_APP_BY_SYNTAX, CRASH_APP_MAGIC } = require("./constants")
+const { CRASH_APP_BY_SYNTAX, NOT_FOUND } = require("./constants")
 
 function getErrorMessage(error) {
 	const {original, fields, stack } = error
@@ -26,7 +26,6 @@ function getErrorType(error) {
 	// CRASH_APP
 	if (stack) return CRASH_APP_BY_SYNTAX
 
-	return CRASH_APP_MAGIC
 }
 function logErrorMessage(error) {
 	console.error(error);
