@@ -1,8 +1,9 @@
 const { Router } = require('express');
+const { AuthController } = require('../controllers/auth.controller');
 
 const authRouter = Router();
-
-authRouter.post('/sign-up', (req, res) => {});
+const { signUp } = AuthController
+authRouter.post('/sign-up', signUp);
 authRouter.post('/sign-in', (req, res) => {});
 authRouter.post('/reset-password', (req, res) => {});
 
