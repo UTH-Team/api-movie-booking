@@ -15,6 +15,7 @@
   "tabWidth": 2,
   "trailingComma": "es5",
   "useTabs": false,
+  "useSpace": true,
   "vueIndentScriptAndStyle": false,
   "rangeStart": 0
 }
