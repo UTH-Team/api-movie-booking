@@ -1,43 +1,48 @@
 const { CRASH_APP_BY_SYNTAX, NOT_FOUND } = require("./constants")
+const typeError = require("./constants/types_error")
 
 function getErrorMessage(error) {
 	const {original, fields, stack } = error
-	const statusCodeFromError = error.status ||  error.statsCode
 	// error from Sequelize ORM
 	if(original) {
 		const { code } = original
 		const keyOfFields = Object.keys(fields)
 		return code + " " + keyOfFields
 	}
-	if(statusCodeFromError === 404){
-		return error.message
-	}
-	if (stack) {
-		return stack;
+
+	if(process.env.NODE_ENV !== "production") {
+		if (stack) {
+			return stack;
+		}
+	
+		if (typeof error.toString === "function") {
+			return error.toString();
+		}
 	}
 
-	if (typeof error.toString === "function") {
-		return error.toString();
-	}
-	return "";
-}
-function getErrorType({error, response}) {
-	// SEQUELIZE
-	const {original, stack } = error
-	if (original) return original.code
-	const statusCodeFromError = error.status ||  error.statsCode
-	if(statusCodeFromError === 404 ) return NOT_FOUND
-	// CRASH_APP
-	if (stack) return CRASH_APP_BY_SYNTAX
-
-}
-function logErrorMessage(error) {
-	console.error(error);
+	return error.message
 }
 
 function isErrorStatusCode(statusCode) {
 	return statusCode >= 400 && statusCode < 600;
 }
+
+function getErrorType({error, response}) {
+	// SEQUELIZE
+	const {original} = error
+	if (original) return original.code
+
+	const statusCodeFromError = error.status ||  error.statsCode
+	if(isErrorStatusCode(statusCodeFromError)) return typeError[statusCodeFromError]
+	return typeError[500]
+	
+}
+
+function logErrorMessage(error) {
+	console.error(error);
+}
+
+
 function getHttpStatusCode({ error, response }) {
 	const statusCodeFromError = error.status || error.statusCode;
 	if (isErrorStatusCode(statusCodeFromError)) {
