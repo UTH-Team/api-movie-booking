@@ -53,7 +53,27 @@ const signUp = async (req, res, next) => {
     next(error);
   }
 };
+
+const forgetPassword = async (req, res, next) => {
+  try {
+    const { newPassword } = req;
+    const { email } = req.body;
+    const salt = bcrypt.genSaltSync(10);
+    let hashPassword = bcrypt.hashSync(newPassword, salt);
+
+    await User.update( {password: hashPassword}, {
+      where: {
+        email
+      }
+    });
+    res.send("Dat mat khau moi thanh cong");
+  } catch (error) {
+    res.send(error)
+  }
+}
+
 module.exports = {
   signIn,
   signUp,
+  forgetPassword,
 };
