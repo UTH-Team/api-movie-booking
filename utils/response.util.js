@@ -1,12 +1,15 @@
-const { CRASH_APP_BY_SYNTAX, NOT_FOUND } = require("./constants")
-const typeError = require("./constants/types_error")
-
+const types = require("./constants/types_error")
+const chalk = require("chalk")
+const messages = require("./responses/error.response")
 function getErrorMessage(error) {
 	const {original, fields, stack } = error
 	// error from Sequelize ORM
 	if(original) {
 		const { code } = original
 		const keyOfFields = Object.keys(fields)
+		if(code === "ER_DUP_ENTRY"){
+			return messages[keyOfFields].notAvailable
+		}
 		return code + " " + keyOfFields
 	}
 
@@ -30,18 +33,21 @@ function isErrorStatusCode(statusCode) {
 function getErrorType({error, response}) {
 	// SEQUELIZE
 	const {original} = error
-	if (original) return original.code
+	if (original) return error.name;
 
 	const statusCodeFromError = error.status ||  error.statsCode
-	if(isErrorStatusCode(statusCodeFromError)) return typeError[statusCodeFromError]
-	return typeError[500]
+	if(isErrorStatusCode(statusCodeFromError)) return types[statusCodeFromError]
+	return types[500]
 	
+}
+const getCurrentTime = () => {
+	const date = new Date(Date.now());
+	return `${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`
 }
 
 function logErrorMessage(error) {
-	console.error(error);
+	console.error(chalk.blue(getCurrentTime()), chalk.red(error));
 }
-
 
 function getHttpStatusCode({ error, response }) {
 	const statusCodeFromError = error.status || error.statusCode;
