@@ -1,5 +1,5 @@
 const createHttpError = require("http-errors");
-const { ACCOUNT_IS_NOT_EXIST } = require("../utils/constants/auth.constant");
+const { ACCOUNT_IS_NOT_EXIST, EMAIL_IS_EXIST } = require("../utils/constants/auth.constant");
 const nodemailer = require('nodemailer')
 const { OAuth2Client } = require('google-auth-library');
 require("dotenv").config();
@@ -11,16 +11,26 @@ const checkExistEmail = (Model) => {
     return async (req,res,next) => {
       try {
         const { email } = req.body;
+        const { url } = req;
         const isExist = await Model.findOne({
             where: {
                 email
             }
         });
-        if( isExist ) {
+
+        if( url == '/sign-in') {
+          if( isExist ) {
              req.recordDB = isExist;
              next();
-        } else {
+          } else {
             next(createHttpError(404, ACCOUNT_IS_NOT_EXIST))
+          }
+        } else {
+          if( isExist ) {
+            next(createHttpError(400, EMAIL_IS_EXIST))
+          } else {
+            next();
+          }
         }
       } catch (error) {
         next(createHttpError(500, error))
