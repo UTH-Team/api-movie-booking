@@ -6,7 +6,7 @@ const { User } = require("../models");
 const authRouter = Router();
 
 authRouter.post("/sign-in", checkExistEmail(User), signIn);
-authRouter.post("/sign-up", signUp);
+authRouter.post("/sign-up", checkExistEmail(User), signUp);
 authRouter.post("/forget-password",checkExistEmail(User), sendEmailForgetPassword(), forgetPassword)
 
 module.exports = {
